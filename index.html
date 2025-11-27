@@ -2,7 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-ript
+ale=1.0">
 <title>Tiny Ghasedak</title>
 
 <style>
@@ -236,15 +237,19 @@ function openModal(t,p,img){
 function closeModal(){modal.style.display="none";}
 
 /* سبد خرید */
-document.getElementById("cartIcon").onclick=()=>toggleCart();
+document.getElementById("cartIcon").onclick=e=>{
+    e.stopPropagation();
+    toggleCart();
+};
 function toggleCart(){
     cartPanel.classList.toggle("open");
 }
-document.body.addEventListener("click",e=>{
-    if(!cartPanel.contains(e.target) && !cartIcon.contains(e.target)){
-        cartPanel.classList.remove("open");
-    }
-});
+
+/* جلوگیری از بسته شدن پنل هنگام کلیک روی داخلش */
+cartPanel.addEventListener("click",e=>e.stopPropagation());
+
+/* کلیک بیرون → بستن پنل */
+document.body.addEventListener("click",()=>cartPanel.classList.remove("open"));
 
 /* افزودن */
 function addToCart(){
@@ -269,33 +274,39 @@ function updateCart(){
             </div>
             <div style="display:flex;align-items:center;gap:5px;">
                 <div class="qty">
-                    <button onclick="changeQty(${idx},1)">+</button>
+                    <button onclick="changeQty(event,${idx},1)">+</button>
                     <span>${i.quantity}</span>
-                    <button onclick="changeQty(${idx},-1)">-</button>
+                    <button onclick="changeQty(event,${idx},-1)">-</button>
                 </div>
-                <button class="removeBtn" onclick="removeItem(${idx})">×</button>
+                <button class="removeBtn" onclick="removeItem(event,${idx})">×</button>
             </div>
         </li>`;
     });
     cartTotal.innerText="جمع کل: "+total.toLocaleString()+" تومان";
 }
 
-/* تغییر تعداد */
-function changeQty(i,d){
+/* جلوگیری از بسته شدن پنل هنگام زدن + و - */
+function changeQty(event,i,d){
+    event.stopPropagation();
     cart[i].quantity+=d;
     if(cart[i].quantity<1) cart[i].quantity=1;
     updateCart();
 }
 
-/* حذف */
-function removeItem(i){
+function removeItem(event,i){
+    event.stopPropagation();
     cart.splice(i,1);
     updateCart();
 }
 
 /* checkout */
-checkoutBtn.onclick=()=>{
+checkoutBtn.onclick=(e)=>{
+    e.stopPropagation();
     if(cart.length===0) return;
+
+    /* ✔ بستن پنل هنگام زدن ادامه */
+    cartPanel.classList.remove("open");
+
     overlay.style.display="flex";
     checkoutList.innerHTML="";
     let sum=0;
@@ -314,8 +325,9 @@ checkoutBtn.onclick=()=>{
     checkoutSum.innerText=sum.toLocaleString();
 };
 
-backBtn.onclick=()=>overlay.style.display="none";
+backBtn.onclick=()=>{
+    overlay.style.display="none";
+};
 </script>
-
 </body>
 </html>
