@@ -84,6 +84,181 @@ header h1{font-size:24px;margin-bottom:10px;}
 .item:hover{transform:scale(1.05);}
 .item img{width:100%;border-radius:12px;margin-bottom:8px;}
 
+/* صفحه محصول */
+#productPage{
+    display:none;
+    padding:20px;
+    text-align:center;
+}
+
+#productImg{
+    width:95%;
+    max-width:400px;
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.25);
+}
+
+#productName{font-size:22px;margin-top:15px;}
+#productPrice{font-size:19px;color:#0077c2;margin:8px 0;}
+
+button{
+    width:80%;
+    max-width:300px;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    font-size:17px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.btn-blue{background:#2196f3;color:white;}
+.btn-red{background:#e20000;color:white;}
+
+/* سبد خرید */
+#cartPanel{
+    position:fixed;
+    top:0;right:-100%;
+    width:75%;
+    max-width:350px;
+    height:100%;
+    background:white;
+    box-shadow:-5px 0 15px rgba(0,0,0,.3);
+    padding:20px;
+    transition:.4s;
+    display:flex;
+    flex-direction:column;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div id="topRight">
+        <div id="cartIcon" onclick="openCart()">
+            🛒
+            <div id="cartCount">0</div>
+        </div>
+    </div>
+    <h1>Tiny Ghasedak</h1>
+    <input id="search" placeholder="جستجو..." oninput="searchProduct()">
+</header>
+
+<!-- لیست محصولات -->
+<div id="products">
+
+    <div class="item" onclick="openProduct('شال ریز بافت طرح دار',285000,'Shal1.jpg')">
+        <img src="Shal1.jpg"><p>شال ریز بافت طرح دار</p>
+    </div>
+
+    <div class="item" onclick="openProduct('شال بافت ریز',285000,'Shal2.jpg')">
+        <img src="Shal2.jpg"><p>شال بافت ریز</p>
+    </div>
+
+    <div class="item" onclick="openProduct('شال اسلپ پیگمنت منگوله دار',235000,'Shal3.jpg')">
+        <img src="Shal3.jpg"><p>شال اسلپ پیگمنت منگوله دار</p>
+    </div>
+
+    <div class="item" onclick="openProduct('شال نخی کندویی ۱',215000,'Shal4.jpg')">
+        <img src="Shal4.jpg"><p>شال نخی کندویی ۱</p>
+    </div>
+
+    <div class="item" onclick="openProduct('شال نخی کندویی ۲',215000,'Shal5.jpg')">
+        <img src="Shal5.jpg"><p>شال نخی کندویی ۲</p>
+    </div>
+
+</div>
+
+<!-- صفحه محصول -->
+<div id="productPage">
+    <img id="productImg">
+    <h2 id="productName"></h2>
+    <p id="productPrice"></p>
+
+    <button class="btn-blue" onclick="addProductToCart()">افزودن به سبد خرید</button>
+    <button class="btn-red" onclick="closeProduct()">بازگشت</button>
+</div>
+
+<!-- سبد خرید -->
+<div id="cartPanel">
+    <h2>سبد خرید</h2>
+    <div id="cartItems"></div>
+    <button class="btn-red" onclick="closeCart()">بستن</button>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+updateCartCount();
+
+let selectedProduct = {};
+
+/* باز کردن صفحه محصول */
+function openProduct(name, price, img){
+    selectedProduct = {name, price, img};
+
+    document.getElementById("productImg").src = img;
+    document.getElementById("productName").innerText = name;
+    document.getElementById("productPrice").innerText = price + " تومان";
+
+    document.getElementById("products").style.display = "none";
+    document.getElementById("productPage").style.display = "block";
+}
+
+/* بازگشت */
+function closeProduct(){
+    document.getElementById("productPage").style.display = "none";
+    document.getElementById("products").style.display = "grid";
+}
+
+/* افزودن به سبد خرید */
+function addProductToCart(){
+    cart.push(selectedProduct);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    alert("به سبد خرید اضافه شد");
+}
+
+/* آپدیت شمارنده */
+function updateCartCount(){
+    document.getElementById("cartCount").innerText = cart.length;
+}
+
+/* سبد خرید */
+function openCart(){document.getElementById("cartPanel").style.right="0";}
+function closeCart(){document.getElementById("cartPanel").style.right="-100%";}
+
+/* سرچ */
+function searchProduct() {
+    let value = document.getElementById("search").value.trim();
+    let items = document.querySelectorAll(".item");
+
+    items.forEach(item => {
+        let text = item.innerText;
+        item.style.display = text.includes(value) ? "block" : "none";
+    });
+}
+</script>
+
+</body>
+</html>#products{
+    padding:20px;
+    display:grid;
+    gap:15px;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+}
+.item{
+    background:white;
+    padding:10px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    cursor:pointer;
+    transition:.3s;
+    text-align:center;
+}
+.item:hover{transform:scale(1.05);}
+.item img{width:100%;border-radius:12px;margin-bottom:8px;}
+
 /* سبد خرید */
 #cartPanel{
     position:fixed;
@@ -199,3 +374,4 @@ function closeCart() {
 
 </body>
 </html>
+
