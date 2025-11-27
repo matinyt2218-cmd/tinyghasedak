@@ -6,237 +6,211 @@
 <title>Tiny Ghasedak</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Vazirmatn",sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Vazirmatn",sans-serif;}
 body{
-    background:linear-gradient(135deg,#2ab5ff 0%, #86e4ff 30%, #ffffff 80%);
+    background:linear-gradient(135deg,#2ab5ff 0%,#86e4ff 30%,#ffffff 80%);
     min-height:100vh;
     padding-bottom:120px;
 }
 
-/* هدر */
+/* header */
 header{
-    width:100%;
-    background:rgba(0,90,160,0.45);
+    width:100%;background:rgba(0,90,160,0.45);
     backdrop-filter:blur(10px);
-    padding:20px 15px 30px;
-    text-align:center;
-    color:white;
+    padding:20px 15px 30px;text-align:center;color:white;
     border-bottom:2px solid rgba(255,255,255,0.3);
     position:relative;
 }
 header h1{font-size:24px;margin-bottom:10px;}
 #topRight{
-    position:absolute;
-    top:15px;
-    left:15px;
-    display:flex;
-    gap:15px;
-    font-size:26px;
-    cursor:pointer;
+    position:absolute;top:15px;left:15px;
+    display:flex;align-items:center;gap:8px;
+    cursor:pointer;font-size:26px;
 }
-
-#cartIcon{
-    position:relative;
-}
-
 #cartCount{
-    position:absolute;
-    top:-10px;
-    right:-10px;
-    background:red;
-    color:white;
-    font-size:12px;
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    background:red;color:white;font-size:12px;
+    padding:2px 6px;border-radius:50%;
 }
 
-/* سرچ */
+/* search */
 #search{
-    width:85%;
-    max-width:350px;
-    padding:10px 15px;
-    border-radius:12px;
-    border:2px solid #004c80;
-    background:white;
-    font-size:16px;
+    width:85%;max-width:350px;padding:10px 15px;
+    border-radius:12px;border:none;font-size:16px;
 }
 
-/* محصولات */
+/* products */
 #products{
     padding:20px;
-    display:grid;
-    gap:15px;
+    display:grid;gap:15px;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
 }
 .item{
-    background:white;
-    padding:10px;
-    border-radius:14px;
+    background:white;padding:10px;border-radius:14px;
     box-shadow:0 4px 12px rgba(0,0,0,.15);
-    cursor:pointer;
-    transition:.3s;
-    text-align:center;
+    cursor:pointer;transition:.3s;text-align:center;
 }
 .item:hover{transform:scale(1.05);}
 .item img{width:100%;border-radius:12px;margin-bottom:8px;}
 
-/* صفحه محصول */
+/* product page */
 #productPage{
-    display:none;
-    padding:20px;
-    text-align:center;
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:white;display:none;flex-direction:column;
+    overflow-y:auto;z-index:10000;
 }
-
-#productImg{
-    width:95%;
-    max-width:400px;
-    border-radius:18px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.25);
+#productPage img{
+    width:100%;max-height:350px;object-fit:cover;
 }
+#productInfo{padding:20px;}
 
-#productName{font-size:22px;margin-top:15px;}
-#productPrice{font-size:19px;color:#0077c2;margin:8px 0;}
-
-button{
-    width:80%;
-    max-width:300px;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    font-size:17px;
-    cursor:pointer;
-    margin-top:10px;
-}
-
-.btn-blue{background:#2196f3;color:white;}
-.btn-red{background:#e20000;color:white;}
-
-/* سبد خرید */
+/* cart panel */
 #cartPanel{
-    position:fixed;
-    top:0;right:-100%;
-    width:75%;
-    max-width:350px;
-    height:100%;
-    background:white;
-    box-shadow:-5px 0 15px rgba(0,0,0,.3);
-    padding:20px;
-    transition:.4s;
-    display:flex;
-    flex-direction:column;
+    position:fixed;top:0;right:-100%;
+    width:300px;height:100vh;background:white;
+    box-shadow:-4px 0 12px rgba(0,0,0,.2);
+    padding:20px;transition:.35s;z-index:9999;
 }
+#cartPanel h3{margin-bottom:10px;}
+#cartItems{max-height:70vh;overflow-y:auto;}
+
+/* buttons */
+.btn{
+    width:100%;padding:12px;border:none;
+    border-radius:12px;font-size:17px;
+    cursor:pointer;margin-top:12px;
+}
+.blue{background:#2196f3;color:white;}
+.red{background:#e20000;color:white;}
 </style>
 </head>
-
 <body>
 
 <header>
-    <div id="topRight">
-        <div id="cartIcon" onclick="openCart()">
-            🛒
-            <div id="cartCount">0</div>
-        </div>
-    </div>
     <h1>Tiny Ghasedak</h1>
-    <input id="search" placeholder="جستجو..." oninput="searchProduct()">
+    <input id="search" placeholder="جستجوی محصول...">
+    <div id="topRight">
+        <span id="cartIcon">🛒</span>
+        <span id="cartCount">0</span>
+    </div>
 </header>
 
-<!-- لیست محصولات -->
+<!-- Products -->
 <div id="products">
-
     <div class="item" onclick="openProduct('شال ریز بافت طرح دار',285000,'Shal1.jpg')">
         <img src="Shal1.jpg"><p>شال ریز بافت طرح دار</p>
     </div>
-
     <div class="item" onclick="openProduct('شال بافت ریز',285000,'Shal2.jpg')">
         <img src="Shal2.jpg"><p>شال بافت ریز</p>
     </div>
-
     <div class="item" onclick="openProduct('شال اسلپ پیگمنت منگوله دار',235000,'Shal3.jpg')">
         <img src="Shal3.jpg"><p>شال اسلپ پیگمنت منگوله دار</p>
     </div>
-
     <div class="item" onclick="openProduct('شال نخی کندویی ۱',215000,'Shal4.jpg')">
         <img src="Shal4.jpg"><p>شال نخی کندویی ۱</p>
     </div>
-
     <div class="item" onclick="openProduct('شال نخی کندویی ۲',215000,'Shal5.jpg')">
         <img src="Shal5.jpg"><p>شال نخی کندویی ۲</p>
     </div>
-
 </div>
 
-<!-- صفحه محصول -->
+<!-- Product Page -->
 <div id="productPage">
-    <img id="productImg">
-    <h2 id="productName"></h2>
-    <p id="productPrice"></p>
+    <img id="pImg">
+    <div id="productInfo">
+        <h2 id="pName"></h2>
+        <p id="pPrice" style="margin:10px 0;font-size:18px;font-weight:bold;"></p>
 
-    <button class="btn-blue" onclick="addProductToCart()">افزودن به سبد خرید</button>
-    <button class="btn-red" onclick="closeProduct()">بازگشت</button>
+        <button class="btn blue" onclick="addToCart()">افزودن به سبد خرید</button>
+        <button class="btn red" onclick="closeProduct()">بازگشت</button>
+    </div>
 </div>
 
-<!-- سبد خرید -->
+<!-- Cart Panel -->
 <div id="cartPanel">
-    <h2>سبد خرید</h2>
+    <h3>سبد خرید</h3>
     <div id="cartItems"></div>
-    <button class="btn-red" onclick="closeCart()">بستن</button>
+    <button class="btn red" onclick="closeCart()">بستن</button>
 </div>
 
 <script>
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 updateCartCount();
 
-let selectedProduct = {};
+/* — search — */
+document.getElementById("search").addEventListener("input", function(){
+    let val = this.value.toLowerCase();
+    document.querySelectorAll(".item").forEach(p=>{
+        if(p.innerText.toLowerCase().includes(val)) p.style.display="block";
+        else p.style.display="none";
+    });
+});
 
-/* باز کردن صفحه محصول */
+/* — open product page — */
+let currentProduct = {};
 function openProduct(name, price, img){
-    selectedProduct = {name, price, img};
-
-    document.getElementById("productImg").src = img;
-    document.getElementById("productName").innerText = name;
-    document.getElementById("productPrice").innerText = price + " تومان";
-
-    document.getElementById("products").style.display = "none";
-    document.getElementById("productPage").style.display = "block";
+    currentProduct = {name, price, img};
+    pName.innerText = name;
+    pPrice.innerText = price.toLocaleString()+" تومان";
+    pImg.src = img;
+    productPage.style.display = "flex";
 }
-
-/* بازگشت */
 function closeProduct(){
-    document.getElementById("productPage").style.display = "none";
-    document.getElementById("products").style.display = "grid";
+    productPage.style.display = "none";
 }
 
-/* افزودن به سبد خرید */
-function addProductToCart(){
-    cart.push(selectedProduct);
+/* — add to cart — */
+function addToCart(){
+    cart.push(currentProduct);
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
-    alert("به سبد خرید اضافه شد");
+    alert("به سبد خرید اضافه شد ✔");
 }
 
-/* آپدیت شمارنده */
+/* — update cart count — */
 function updateCartCount(){
     document.getElementById("cartCount").innerText = cart.length;
 }
 
-/* سبد خرید */
-function openCart(){document.getElementById("cartPanel").style.right="0";}
-function closeCart(){document.getElementById("cartPanel").style.right="-100%";}
+/* — open cart — */
+cartIcon.onclick = function(){
+    loadCart();
+    cartPanel.style.right = "0";
+}
 
-/* سرچ */
-function searchProduct() {
-    let value = document.getElementById("search").value.trim();
-    let items = document.querySelectorAll(".item");
+function closeCart(){
+    cartPanel.style.right = "-100%";
+}
 
-    items.forEach(item => {
-        let text = item.innerText;
-        item.style.display = text.includes(value) ? "block" : "none";
+/* — load cart items — */
+function loadCart(){
+    cartItems.innerHTML = "";
+    if(cart.length === 0){
+        cartItems.innerHTML = "<p>سبد خرید خالی است</p>";
+        return;
+    }
+
+    cart.forEach((p,i)=>{
+        cartItems.innerHTML += `
+            <div style="border-bottom:1px solid #ccc;padding:10px;">
+                <strong>${p.name}</strong><br>
+                قیمت: ${p.price.toLocaleString()} تومان
+                <br>
+                <button onclick="removeItem(${i})" style="
+                    margin-top:6px;padding:6px 12px;
+                    background:#e20000;color:white;
+                    border:none;border-radius:8px;cursor:pointer;
+                ">حذف</button>
+            </div>
+        `;
     });
+}
+
+/* — remove item — */
+function removeItem(i){
+    cart.splice(i,1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    loadCart();
 }
 </script>
 
